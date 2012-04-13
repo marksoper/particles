@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Sand Pixels</title>
+
+    <style>
+      body, canvas {
+        padding: 0;
+        margin: 0;
+      }
+    </style>
+
+    <script type="text/javascript">
+
+var S = {};
+
+window.addEventListener('load', function() {
+
+  var h = window.innerHeight;
+  var w = window.innerWidth;
+  S.w = w;
+  S.h = h;
+
+  // Get the canvas element.
+  var canvas = document.getElementById('c');
+  canvas.width = w;
+  canvas.height = h;
+  S.canvas = canvas;
+
+  // Get the canvas 2d context.
+  var context = canvas.getContext('2d');
+  S.context = context;
+
+  var imageData = context.createImageData(w,h);
+  S.imageData = imageData;
+
+  var d = imageData.data;
+  S.d = d;
+
+  // Set initial image data
+  for (var i = 0, n = d.length; i < n; i += 4) {
+    d[i  ] = 127; // the red channel
+    d[i+1] = 127; // the green channel
+    d[i+2] = 127; // the blue channel 
+    d[i+3] = 127; // the alpha channel
+  }
+
+  // Draw initial image data
+  context.putImageData(imageData, 0, 0);
+
+  window.addEventListener('mousemove', function(evt) {
+    var frame = context.getImageData(0, 0, S.w, S.h);
+    S.frame = frame;
+    var d = S.d = frame.data;
+    var p = (evt.clientY * S.w + evt.clientX) * 4;
+    var pixel = { 
+      r: [p],
+      g: d[p+1],
+      b: d[p+2],
+      a: d[p+3]
+    };
+    console.log("(" + evt.clientX + "," + evt.clientY + ") --- (" + pixel['r'] + "," + pixel['g'] + "," + pixel['b'] + "," + pixel['a'] + ")");
+    d[p] = 255;
+    d[p+1] = 0;
+    d[p+2] = 0;
+    context.putImageData(frame, 0, 0);
+  });
+
+}, false);
+
+</script>
+  </head>
+  <body>
+    <canvas id="c"></canvas>
+  </body>
+</html>
