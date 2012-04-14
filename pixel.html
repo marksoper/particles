@@ -15,6 +15,63 @@
 
 var S = {};
 
+var funkify = function(d) {
+  // Set initial image data
+  for (var i = 0, n = d.length; i < n; i += 4) {
+    var mod = i % 255; 
+    d[i  ] = mod; // the red channel
+    d[i+1] = mod; // the green channel
+    d[i+2] = mod; // the blue channel 
+    d[i+3] = 255; // the alpha channel
+  }
+  return d;
+};
+
+var rowify = function(d) {
+  for (var i = 0, n = d.length; i < n; i += 4) {
+    var row = (255 * i) / (4 * S.w * S.h); 
+    d[i  ] = 255 - row; // the red channel
+    d[i+1] = 255 - row; // the green channel
+    d[i+2] = 255 - row; // the blue channel 
+    d[i+3] = 255; // the alpha channel
+  }
+  return d;
+};
+
+window.addEventListener('mousemove', function(evt) {
+    var frame = S.context.getImageData(0, 0, S.w, S.h);
+    S.frame = frame;
+    var d = S.d = frame.data;
+    var p = (evt.clientY * S.w + evt.clientX) * 4;
+    var pixel = { 
+      r: [p],
+      g: d[p+1],
+      b: d[p+2],
+      a: d[p+3]
+    };
+    console.log("(" + evt.clientX + "," + evt.clientY + ") --- (" + pixel['r'] + "," + pixel['g'] + "," + pixel['b'] + "," + pixel['a'] + ")");
+    d[p] = 255;
+    d[p+1] = 0;
+    d[p+2] = 0;
+    S.context.putImageData(frame, 0, 0);
+});
+
+window.addEventListener('resize', function() {
+  S.h = window.innerHeight;
+  S.w = window.innerWidth;
+
+  console.log("--- resizing to: " + "(" + S.w + "," + S.h + ")" );
+
+  S.canvas.width = S.w;
+  S.canvas.height = S.h;
+  S.imageData = S.context.createImageData(S.w, S.h);
+  S.d = S.imageData.data;
+
+  rowify(S.d);
+  S.context.putImageData(S.imageData, 0, 0);
+
+});
+
 window.addEventListener('load', function() {
 
   var h = window.innerHeight;
@@ -38,34 +95,21 @@ window.addEventListener('load', function() {
   var d = imageData.data;
   S.d = d;
 
+  rowify(d);
+  context.putImageData(imageData, 0, 0);
+
   // Set initial image data
+  /*
   for (var i = 0, n = d.length; i < n; i += 4) {
     d[i  ] = 127; // the red channel
     d[i+1] = 127; // the green channel
     d[i+2] = 127; // the blue channel 
     d[i+3] = 127; // the alpha channel
   }
+  */
 
   // Draw initial image data
   context.putImageData(imageData, 0, 0);
-
-  window.addEventListener('mousemove', function(evt) {
-    var frame = context.getImageData(0, 0, S.w, S.h);
-    S.frame = frame;
-    var d = S.d = frame.data;
-    var p = (evt.clientY * S.w + evt.clientX) * 4;
-    var pixel = { 
-      r: [p],
-      g: d[p+1],
-      b: d[p+2],
-      a: d[p+3]
-    };
-    console.log("(" + evt.clientX + "," + evt.clientY + ") --- (" + pixel['r'] + "," + pixel['g'] + "," + pixel['b'] + "," + pixel['a'] + ")");
-    d[p] = 255;
-    d[p+1] = 0;
-    d[p+2] = 0;
-    context.putImageData(frame, 0, 0);
-  });
 
 }, false);
 
