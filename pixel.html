@@ -15,6 +15,49 @@
 
 var S = {};
 
+S.baseColor = {
+  r: 1.0,
+  g: .44,
+  b: 0.0,
+  a: 1.0
+};
+
+var color255 = function(color) {
+  var c255 = {};
+  ['r', 'g', 'b', 'a'].forEach(function(key) {
+    c255[key] = Math.floor(color[key] * 255);
+  });
+  return c255;
+};
+
+var generateColorDist = function(baseColor) {
+  baseColor = baseColor || S.baseColor;
+  dist = {};
+  var grainColor;
+  for (var i=0; i < 100; i += 1) {
+    if (i < 2) {
+      grainColor = {r: 0.0, g: 0.0, b: 0.0};
+    } else if ( (i>=3) && (i<=98)) {
+      var delta = Math.abs(i-50) / 100;
+      ['r', 'g', 'b'].forEach(function(key) {
+        grainColor[key] = S.baseColor[key] + (i-50)*Math.sqrt(delta)*S.baseColor[key]/1250;
+      });
+      grainColor = S.baseColor;
+    } else {
+      grainColor = {r: 1.0, g: 1.0, b: 1.0};
+    }
+    grainColor['a'] = baseColor['a'];
+    dist[i] = color255(grainColor);
+  }
+  return dist;
+};
+S.colorDist = generateColorDist();
+
+var getGrainColor = function() {
+  var seed = Math.floor(100*Math.random());
+  return S.colorDist[seed];
+};
+
 var funkify = function(d) {
   // Set initial image data
   for (var i = 0, n = d.length; i < n; i += 4) {
@@ -34,6 +77,17 @@ var rowify = function(d) {
     d[i+1] = 255 - row; // the green channel
     d[i+2] = 255 - row; // the blue channel 
     d[i+3] = 255; // the alpha channel
+  }
+  return d;
+};
+
+var sandify = function(d) {
+  for (var i = 0, n = d.length; i < n; i += 4) {
+    var grainColor = getGrainColor();
+    d[i  ] = grainColor['r'];
+    d[i+1] = grainColor['g'];
+    d[i+2] = grainColor['b'];
+    d[i+3] = grainColor['a'];
   }
   return d;
 };
@@ -67,7 +121,7 @@ window.addEventListener('resize', function() {
   S.imageData = S.context.createImageData(S.w, S.h);
   S.d = S.imageData.data;
 
-  rowify(S.d);
+  sandify(S.d);
   S.context.putImageData(S.imageData, 0, 0);
 
 });
@@ -95,20 +149,7 @@ window.addEventListener('load', function() {
   var d = imageData.data;
   S.d = d;
 
-  rowify(d);
-  context.putImageData(imageData, 0, 0);
-
-  // Set initial image data
-  /*
-  for (var i = 0, n = d.length; i < n; i += 4) {
-    d[i  ] = 127; // the red channel
-    d[i+1] = 127; // the green channel
-    d[i+2] = 127; // the blue channel 
-    d[i+3] = 127; // the alpha channel
-  }
-  */
-
-  // Draw initial image data
+  sandify(d);
   context.putImageData(imageData, 0, 0);
 
 }, false);
