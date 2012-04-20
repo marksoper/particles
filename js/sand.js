@@ -41,8 +41,9 @@ Sand.prototype.indexColors = function() {
   this.colorIndex = [];
   var colorWeights = [];
   for (var color in this.colors) {
+    rgb = this.hexToRGB(color);
     colorWeights.push({
-      color: color,
+      color: rgb,
       weight: this.colors[color]
     });
   }
@@ -89,8 +90,7 @@ Sand.prototype.hexToRGB = function(hex) {
 
 Sand.prototype.setImageData = function(data) {
   for (var i = 0, n = data.length; i < n; i += 4) {
-    var randomColor = this.getRandomColor();
-    var color = this.hexToRGB(randomColor);
+    var color = this.getRandomColor();
     data[i  ] = color.r;
     data[i+1] = color.g;
     data[i+2] = color.b;
