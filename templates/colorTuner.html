@@ -29,6 +29,17 @@ var sand = new Sand(options);
 sand.normalizeColors();  // TODO: should be better way of constructing
 var S = {};  // TODO: better way of organizing data
 
+S.draw = function() {
+  sand.setImageData(S.d);
+  S.context.putImageData(S.imageData, 0, 0);
+};
+
+S.animate = function() {
+  window.webkitRequestAnimationFrame(S.draw);
+  render();
+  S.animate();
+};
+
 window.addEventListener('resize-off', function() {
   S.h = window.innerHeight;
   S.w = window.innerWidth;
@@ -40,8 +51,7 @@ window.addEventListener('resize-off', function() {
   S.imageData = S.context.createImageData(S.w, S.h);
   S.d = S.imageData.data;
 
-  sand.setImageData(S.d);
-  S.context.putImageData(S.imageData, 0, 0);
+  S.draw();
 
 });
 
@@ -68,8 +78,7 @@ window.addEventListener('load', function() {
   var d = imageData.data;
   S.d = d;
 
-  sand.setImageData(d);
-  context.putImageData(imageData, 0, 0);
+  S.animate();
 
 }, false);
 
