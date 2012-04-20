@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Sand Color Tuner</title>
+
+    <style>
+      body, canvas {
+        padding: 0;
+        margin: 0;
+      }
+    </style>
+
+    <script src="sand.js"></script>
+
+    <script>
+
+var options = {
+  colors: {
+    "ff6c00": 0.5,
+    "bf6d30": 0.3,
+    "ac4g00": 0.2
+  }
+}
+var sand = new Sand(options);
+sand.normalizeColors();  // TODO: should be better way of constructing
+var S = {};  // TODO: better way of organizing data
+
+window.addEventListener('resize-off', function() {
+  S.h = window.innerHeight;
+  S.w = window.innerWidth;
+
+  console.log("--- resizing to: " + "(" + S.w + "," + S.h + ")" );
+
+  S.canvas.width = S.w;
+  S.canvas.height = S.h;
+  S.imageData = S.context.createImageData(S.w, S.h);
+  S.d = S.imageData.data;
+
+  sand.setImageData(S.d);
+  S.context.putImageData(S.imageData, 0, 0);
+
+});
+
+window.addEventListener('load', function() {
+
+  var h = window.innerHeight;
+  var w = window.innerWidth;
+  S.w = w;
+  S.h = h;
+
+  // Get the canvas element.
+  var canvas = document.getElementById('c');
+  canvas.width = w;
+  canvas.height = h;
+  S.canvas = canvas;
+
+  // Get the canvas 2d context.
+  var context = canvas.getContext('2d');
+  S.context = context;
+
+  var imageData = context.createImageData(w,h);
+  S.imageData = imageData;
+
+  var d = imageData.data;
+  S.d = d;
+
+  sand.setImageData(d);
+  context.putImageData(imageData, 0, 0);
+
+}, false);
+
+
+    </script>
+
+  </head>
+  <body>
+    <canvas id="c"></canvas>
+  </body>
+</html>
