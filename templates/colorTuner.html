@@ -35,9 +35,14 @@ S.draw = function() {
 };
 
 S.animate = function() {
-  window.webkitRequestAnimationFrame(S.draw);
-  render();
-  S.animate();
+  setTimeout(function() {
+    S.draw();
+    S.animate();
+  },
+  500);
+  //window.webkitRequestAnimationFrame(S.draw);
+  //render();
+  //S.animate();
 };
 
 window.addEventListener('resize-off', function() {
