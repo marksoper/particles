@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Sand Color Tuner</title>
+
+    <style>
+      body, canvas {
+        padding: 0;
+        margin: 0;
+      }
+    </style>
+
+    <%= headScripts %>
+
+    <script>
+
+var options = {
+  colors: {
+    "ff6c00": 0.35,
+    "ff5c00": 0.35,
+    "ff9140": 0.296,
+    "ffae73": 0.01,
+    "bf6d30": 0.01,
+    "ac4600": 0.02
+  }
+}
+var sand = new Sand(options);
+sand.normalizeColors();  // TODO: should be better way of constructing
+var S = {};  // TODO: better way of organizing data
+
+S.draw = function() {
+  sand.setImageData(S.d);
+  S.context.putImageData(S.imageData, 0, 0);
+};
+
+S.animate = function() {
+  setTimeout(function() {
+    S.draw();
+    S.animate();
+  },
+  500);
+  //window.webkitRequestAnimationFrame(S.draw);
+  //render();
+  //S.animate();
+};
+
+window.addEventListener('resize-off', function() {
+  S.h = window.innerHeight;
+  S.w = window.innerWidth;
+
+  console.log("--- resizing to: " + "(" + S.w + "," + S.h + ")" );
+
+  S.canvas.width = S.w;
+  S.canvas.height = S.h;
+  S.imageData = S.context.createImageData(S.w, S.h);
+  S.d = S.imageData.data;
+
+  S.draw();
+
+});
+
+window.addEventListener('load', function() {
+
+  var h = window.innerHeight;
+  var w = window.innerWidth;
+  S.w = w;
+  S.h = h;
+
+  // Get the canvas element.
+  var canvas = document.getElementById('c');
+  canvas.width = w;
+  canvas.height = h;
+  S.canvas = canvas;
+
+  // Get the canvas 2d context.
+  var context = canvas.getContext('2d');
+  S.context = context;
+
+  var imageData = context.createImageData(w,h);
+  S.imageData = imageData;
+
+  var d = imageData.data;
+  S.d = d;
+
+  S.animate();
+
+}, false);
+
+
+    </script>
+
+  </head>
+  <body>
+    <canvas id="c"></canvas>
+  </body>
+</html>
