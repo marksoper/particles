@@ -12,44 +12,56 @@
     </style>
 
     <%= headScripts.grain %>
+    <%= headScripts.sand %>
 
     <script>
 
-var S = {};
+var GROUND_HEIGHT = 50;
+var ADD_GRAIN_RATE = 0.5;  // per second
+var FRAME_RATE = 10;  // fps
+
+var sand = new Sand();
+
+var drawTheGround = function(options) {
+  var canvas = options.canvas;
+  var context = options.context;
+  context.fillStyle = options.fillStyle;
+  context.fillRect(0, canvas.height - options.height, canvas.width, options.height);
+};
+
+var addGrain = function() {
+  if (sand.status === "started") {
+    sand.addGrain({
+      moving: true
+    });
+  }
+};
+
+var advance = function() {
+  sand.advance();
+};
 
 window.addEventListener('load', function() {
 
-  S.h = window.innerHeight;
-  S.w = window.innerWidth;
+  var canvas = document.getElementById('c');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  sand.canvas = canvas;
 
-  S.canvas = document.getElementById('c');
-  S.canvas.width = S.w;
-  S.canvas.height = S.h;
+  var context = canvas.getContext('2d');
+  sand.context = context;
 
-  S.collisionMatrix = S.
+  drawTheGround({
+    canvas: canvas,
+    context: context,
+    fillStyle: "rgba(50,50,50,1.0)",
+    borderStyle: "rgba(25,25,25,1.0)",
+    height: GROUND_HEIGHT
+  });
+  sand.ground = [[canvas.width, GROUND_HEIGHT]]; 
 
-  S.context = S.canvas.getContext('2d');
-
-  S.grains = {
-    moving: [],
-    stopped: []
-  };
-
-  S.grains.moving.push(new Grain({
-    context: S.context,
-    moving: true
-  }));
-
-  S.
-
-  S.next = function() {
-    S.grains.forEach(function(grain) {
-      grain.next();
-      console.log("grain next at location: " + grain.location[0] + " , " + grain.location[1]);
-    });
-  };
-
-  setInterval(S.next, 100);
+  var addGrainInterval = setInterval(addGrain, 1000.0 / ADD_GRAIN_RATE);
+  var frameInterval = setInterval(advance, 1000.0 / FRAME_RATE);
 
 }, false);
 

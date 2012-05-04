@@ -7,6 +7,7 @@ var DEFAULT_GRAIN_VELOCITY = [20,5];  // pixels per frame
 var DEFAULT_GRAIN_MOVING = true;
 
 var Grain = function(options) {
+  this.id = options.id;
   this.context = options.context;
   this.color = options.color || DEFAULT_GRAIN_COLOR;
   this.height = options.height || DEFAULT_GRAIN_HEIGHT;
@@ -31,9 +32,9 @@ Grain.prototype.relocate = function(frames) {
   this.location = [ this.location[0] + (frames * this.velocity[0]), this.location[1] + (frames * this.velocity[1]) ];
 };
 
-Grain.prototype.next = function() {
+Grain.prototype.advance = function() {
   if (this.moving !== true) {
-    console.log("Warning: next called to animate a stopped grain");
+    console.log("Warning: advance called to animate a stopped grain");
   }
   this.clear();
   this.relocate();
