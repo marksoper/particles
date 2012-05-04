@@ -1,4 +1,20 @@
 
+var DEFAULT_COLOR = {
+  r: 255,
+  g: 127,
+  b: 0,
+  a: 255
+};
+
+var DEFAULT_SIZE = 10;
+
+var Particle = function(options) {
+  this.color = options.color || DEFAULT_PARTICLE_COLOR;
+  this.size = options.size || DEFAULT_PARTICLE_SIZE;
+};
+
+
+
 
 
 var Sand = function(options) {

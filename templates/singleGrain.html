@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Sand Color Tuner</title>
+    <title>Single Grain</title>
 
     <style>
       body, canvas {
@@ -11,79 +11,45 @@
       }
     </style>
 
-    <%= headScripts %>
+    <%= headScripts.grain %>
 
     <script>
 
-var options = {
-  colors: {
-    "ff6c00": 0.35,
-    "ff5c00": 0.35,
-    "ff9140": 0.296,
-    "ffae73": 0.01,
-    "bf6d30": 0.01,
-    "ac4600": 0.02
-  }
-}
-var sand = new Sand(options);
-sand.normalizeColors();  // TODO: should be better way of constructing
-var S = {};  // TODO: better way of organizing data
-
-S.draw = function() {
-  sand.setImageData(S.d);
-  S.context.putImageData(S.imageData, 0, 0);
-};
-
-S.animate = function() {
-  setTimeout(function() {
-    S.draw();
-    S.animate();
-  },
-  500);
-  //window.webkitRequestAnimationFrame(S.draw);
-  //render();
-  //S.animate();
-};
-
-window.addEventListener('resize-off', function() {
-  S.h = window.innerHeight;
-  S.w = window.innerWidth;
-
-  console.log("--- resizing to: " + "(" + S.w + "," + S.h + ")" );
-
-  S.canvas.width = S.w;
-  S.canvas.height = S.h;
-  S.imageData = S.context.createImageData(S.w, S.h);
-  S.d = S.imageData.data;
-
-  S.draw();
-
-});
+var S = {};
 
 window.addEventListener('load', function() {
 
-  var h = window.innerHeight;
-  var w = window.innerWidth;
-  S.w = w;
-  S.h = h;
+  S.h = window.innerHeight;
+  S.w = window.innerWidth;
 
-  // Get the canvas element.
-  var canvas = document.getElementById('c');
-  canvas.width = w;
-  canvas.height = h;
-  S.canvas = canvas;
+  S.canvas = document.getElementById('c');
+  S.canvas.width = S.w;
+  S.canvas.height = S.h;
 
-  // Get the canvas 2d context.
-  var context = canvas.getContext('2d');
-  S.context = context;
+  S.collisionMatrix = S.
 
-  var imageData = context.createImageData(w,h);
-  S.imageData = imageData;
+  S.context = S.canvas.getContext('2d');
 
-  var d = imageData.data;
-  S.d = d;
+  S.grains = {
+    moving: [],
+    stopped: []
+  };
 
-  S.animate();
+  S.grains.moving.push(new Grain({
+    context: S.context,
+    moving: true
+  }));
+
+  S.
+
+  S.next = function() {
+    S.grains.forEach(function(grain) {
+      grain.next();
+      console.log("grain next at location: " + grain.location[0] + " , " + grain.location[1]);
+    });
+  };
+
+  setInterval(S.next, 100);
 
 }, false);
 
