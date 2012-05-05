@@ -5,6 +5,7 @@ var DEFAULT_GRAIN_WIDTH = 10;  // pixels
 var DEFAULT_GRAIN_LOCATION = [0,0];
 var DEFAULT_GRAIN_VELOCITY = [20,5];  // pixels per frame
 var DEFAULT_GRAIN_MOVING = true;
+var DEFAULT_GRAIN_VISIBLE = true;
 
 var Grain = function(options) {
   this.id = options.id;
@@ -15,6 +16,7 @@ var Grain = function(options) {
   this.location = options.location || DEFAULT_GRAIN_LOCATION;
   this.velocity = options.velocity || DEFAULT_GRAIN_VELOCITY;
   this.moving = options.moving || DEFAULT_GRAIN_MOVING;
+  this.visible = options.visible || DEFAULT_GRAIN_VISIBLE;
 };
 
 Grain.prototype.draw = function(location) {
