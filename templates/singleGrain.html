@@ -58,9 +58,11 @@ window.addEventListener('load', function() {
     borderStyle: "rgba(25,25,25,1.0)",
     height: GROUND_HEIGHT
   });
+  sand.setBounds();
+  sand.setEdges();
   sand.edges.bottom = {
     type: "container",
-    value: [[canvas.width, this.canvas.height - GROUND_HEIGHT]];
+    value: [[canvas.width, canvas.height - GROUND_HEIGHT]]
   };
 
   var addGrainInterval = setInterval(addGrain, 1000.0 / ADD_GRAIN_RATE);

@@ -11,24 +11,36 @@ var Sand = function(options) {
     stopped: []
   };
   this.idSequence = 0;
-  this.bounds = this.bounds || {
+  if (this.canvas) {
+    this.setBounds();
+    this.setEdges();
+  }
+};
+
+Sand.prototype.setBounds = function(canvas) {
+  canvas = canvas || this.canvas;
+  this.bounds = {
     top: 0,
-    right: this.canvas.width,
-    bottom: this.canvas.height,
+    right: canvas.width,
+    bottom: canvas.height,
     left: 0
   };
-  this.edges = this.edges || {
+};
+
+Sand.prototype.setEdges = function(canvas) {
+  canvas = canvas || this.canvas;
+  this.edges = {
     top: {
       type: "bound",
       value: 0
     },
     right: {
       type: "bound",
-      value: this.canvas.width
+      value: canvas.width
     },
     bottom: {
       type: "container",
-      value: [[canvas.width, this.canvas.height]]
+      value: [[canvas.width, canvas.height]]
     },
     left: {
       type: "bound",
@@ -42,6 +54,7 @@ Sand.prototype.addGrain = function(options) {
   options.id = this.idSequence;
   this.idSequence+=1;
   var grain = new this.Grain(options);
+  grain.draw();
   if (grain.moving) {
     this.grains.moving.push(grain);
   } else {
@@ -68,7 +81,7 @@ Sand.prototype.detectEdges = function(grain) {
     left: null
   };
   if (this.edges.top.type === "bound") {  // top container not supported
-    if ( (grain.location[1] - grain.height) < this.edges.top.value ) {
+    if ( grain.location[1] < this.edges.top.value ) {
       hits.top = {
         type: this.edges.top.type,
         value: grain.location[0]
@@ -86,11 +99,14 @@ Sand.prototype.detectEdges = function(grain) {
     }
   }
   if (this.edges.bottom.type === "container") {  // only container supported for bottom
-    hits.bottom = {
-      type: this.edges.bottom.type,
-      value: this.detectContainer(grain, this.edges.bottom.value)
-    };
-    return hits;
+    // TODO: Need separate function to detect more complex container edge
+    if ( (grain.location[1] + grain.height) >= this.edges.bottom.value[0][1] ) {
+      hits.bottom = {
+        type: this.edges.bottom.type,
+        value: this.detectContainer(grain, this.edges.bottom.value)
+      };
+      return hits;
+    }
   }
   if (this.edges.left.type === "bound") {  // left container not supported
     if ( (grain.location[0] - grain.width) < this.edges.left.value ) {
@@ -109,7 +125,6 @@ Sand.prototype.advance = function() {
   if (this.status === "started") {
     this.grains.moving.forEach(function(grain) {
       grain.advance();
-      console.log("grain advance at location: " + grain.location[0] + " , " + grain.location[1]);
     });
     this.grains.moving.forEach(function(grain) {
       var hits = self.detectEdges(grain);
@@ -117,11 +132,11 @@ Sand.prototype.advance = function() {
         if (hits[e]) {
           if (hits[e].type === "bound") {
             grain.visible = false;
-            delete this.grains.moving(this.grains.moving.indexOf(grain));
+            self.grains.moving.splice(self.grains.moving.indexOf(grain),1);
           } else if (hits[e].type === "container") {
             grain.moving = false;
-            this.grains.stopped.push(grain);
-            delete this.grains.moving(this.grains.moving.indexOf(grain));
+            self.grains.stopped.push(grain);
+            self.grains.moving.splice(self.grains.moving.indexOf(grain),1);
           }
         }
       }
