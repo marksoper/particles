@@ -32,7 +32,9 @@ var drawTheGround = function(options) {
 var addGrain = function() {
   if (sand.status === "started") {
     sand.addGrain({
-      moving: true
+      moving: true,
+      location: [Math.random() * sand.canvas.width, Math.random() * sand.canvas.height / 2],
+      velocity: [20 - (Math.random() * 40), 5]
     });
   }
 };
