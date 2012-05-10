@@ -13,11 +13,19 @@ scripts.forEach(function(scriptName) {
   logger.info("got script: " + scriptName);
 });
 
+var dirname = "./www";
+var existingPages = fs.readdirSync(dirname);
+existingPages.forEach(function(page) {
+  fs.unlinkSync(dirname + "/" + page);
+});
+//fs.rmdirSync(dirname);
+//fs.mkdirSync(dirname);
+
 var templates = fs.readdirSync('./templates');
 templates.forEach(function(template) {
   var html = fs.readFileSync('./templates/' + template, 'utf-8');
   var pageHtml = _.template(html, { headScripts: headScripts });
-  var pageName = './www/' + template;
+  var pageName = dirname + "/" + template;
   fs.writeFileSync(pageName, pageHtml, 'utf-8');
   logger.info("built page: " + pageName);
 });
