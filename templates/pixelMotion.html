@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Sand Pixel Motion</title>
+
+    <style>
+      body, canvas {
+        padding: 0;
+        margin: 0;
+      }
+    </style>
+
+    
+
+    <script>
+
+var h, w, canvas, context, imageData, d;
+
+window.addEventListener('load', function() {
+
+  h = window.innerHeight;
+  w = window.innerWidth;
+
+  // Get the canvas element.
+  canvas = document.getElementById('c');
+  canvas.width = w;
+  canvas.height = h;
+
+  // Get the canvas 2d context.
+  context = canvas.getContext('2d');
+
+  imageData = context.createImageData(w,h);
+  d = imageData.data;
+
+}, false);
+
+
+    </script>
+
+  </head>
+  <body>
+    <canvas id="c"></canvas>
+  </body>
+</html>

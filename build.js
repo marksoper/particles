@@ -14,12 +14,15 @@ scripts.forEach(function(scriptName) {
 });
 
 var dirname = "./www";
-var existingPages = fs.readdirSync(dirname);
-existingPages.forEach(function(page) {
-  fs.unlinkSync(dirname + "/" + page);
-});
-//fs.rmdirSync(dirname);
-//fs.mkdirSync(dirname);
+try {
+  var existingPages = fs.readdirSync(dirname);
+  existingPages.forEach(function(page) {
+    fs.unlinkSync(dirname + "/" + page);
+  });
+}
+catch (err) {
+  fs.mkdirSync(dirname);
+}
 
 var templates = fs.readdirSync('./templates');
 templates.forEach(function(template) {
